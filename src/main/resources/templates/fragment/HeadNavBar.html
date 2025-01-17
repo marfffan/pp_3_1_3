@@ -1,0 +1,32 @@
+<nav xmlns:th="http://www.thymeleaf.org"
+     class="navbar navbar-dark bg-dark flex-md-nowrap p-1 shadow">
+    <div class="container-fluid">
+        <div th:if="${#authentication.isAuthenticated()}">
+            <span class="navbar-text font-weight-bold" style="color: white"
+                  th:text="${#authentication.getName()}">
+            </span>
+
+            <span class="navbar-text" style="color: white"
+                  th:text="' with roles: ' + ${#strings.arrayJoin(#authentication.getAuthorities(), ' ')}">
+            </span>
+        </div>
+
+        <div th:if="${!#authentication.isAuthenticated()}">
+            <span class="navbar-text font-weight-bold" style="color: white"
+                  th:text="'Привет Гость.'">
+            </span>
+
+            <span class="navbar-text" style="color: white"
+                  th:text="'пожалуйста авторизуйся'">
+            </span>
+        </div>
+        <div>
+            <ul class="navbar-nav">
+                <li class="nav-item text-nowrap">
+                    <a class="nav-link" th:if="${#authentication.isAuthenticated()}" th:href="@{/logout}">Logout</a>
+                    <a class="nav-link" th:if="${!#authentication.isAuthenticated()}" th:href="@{/login}">Login</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
