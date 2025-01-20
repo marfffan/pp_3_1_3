@@ -1,6 +1,7 @@
 package app.service;
 
 import app.model.User;
+import app.repository.UserRepo;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -10,75 +11,65 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    private EntityManager entityManager;
-    private RoleService roleService;
+    private UserRepo userRepo;
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public void setEntityManager(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public void setUserRepo(UserRepo userRepo) {
+        this.userRepo = userRepo;
+    }
+
+    @Autowired
+    public void setPasswordEncoder(@Lazy PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     @Transactional
     public void addUser(User user) {
-       // user.setPassword(passwordEncoder.encode(user.getPassword()));
-        entityManager.persist(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepo.save(user);
     }
 
     @Override
     @Transactional
     public void deleteUser(Long id) {
-        User user = entityManager.find(User.class, id);
-        if (user == null) {
-            throw new EntityNotFoundException("Пользователь не найден");
-        }
-
-        // Удаляем все роли пользователя
-        user.getRoles().clear();
-
-        // Удаляем самого пользователя
-        entityManager.remove(user);
+        userRepo.deleteById(id);
     }
 
     @Override
     @Transactional
     public void editUser(User user) {
-        if (user != null && !user.getId().equals(entityManager.find(User.class, user.getId()).getId())) {
+        if (user != null && !user.getId().equals(userRepo.findById(user.getId()).orElse(null).getId())) {
             String encodedPassword = passwordEncoder.encode(user.getPassword());
             user.setPassword(encodedPassword);
         }
-        entityManager.merge(user);
+        userRepo.saveAndFlush(user);
     }
 
     @Override
     @Transactional(readOnly = true)
     public User getUserById(Long id) {
-        return entityManager.find(User.class, id);
+        return userRepo.findById(id).orElse(null);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<User> getAllUsers() {
-        return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
+        return userRepo.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
-                .setParameter("username", username)
-                .getSingleResult();
-        if (user == null) {
-            throw new UsernameNotFoundException("Пользователь не найден");
-        }
-        return user;
+        //Ленивая загрузка
+        User user = userRepo.getUserByUsername(username);
+        Hibernate.initialize(user.getRoles());
+        return userRepo.getUserByUsername(username);
     }
 }

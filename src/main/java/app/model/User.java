@@ -1,6 +1,5 @@
 package app.model;
 
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,7 +12,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "t_users")
-@EntityListeners(AuditingEntityListener.class)
 public class User implements Serializable, UserDetails {
 
     @Id
@@ -38,7 +36,7 @@ public class User implements Serializable, UserDetails {
     @Column(name = "age")
     private Integer age;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinTable(name = "t_users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
