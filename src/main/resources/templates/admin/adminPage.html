@@ -25,26 +25,20 @@
 
                 <!--навигация слева-->
                 <ul class="nav nav-pills flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/hello">Home</a>
-                    </li>
 
-                    <div sec:authorize="hasAuthority('USER')">
+
+<!--                    <div sec:authorize="hasAuthority('USER')">-->
+
                         <li class="nav-item">
-                            <a class="nav-link" href="/profile">User</a>
+                            <a class="nav-link" href="/user/user">User</a>
                         </li>
-                    </div>
+
 
                     <li class="nav-item">
                         <a class="nav-link active" data-toggle="tab" href="#Admin">Admin</a>
                     </li>
 
-                    <div sec:authorize="hasAuthority('VIP')">
-                        <li class="nav-item">
-                            <a class="nav-link"
-                               href="/vip">VIP</a>
-                        </li>
-                    </div>
+
                 </ul>
             </div>
             <div class="col-md-10 bg-light"
@@ -134,18 +128,15 @@
                                                                             <label for="age" class="form-label">Возраст</label>
                                                                             <input type="number" class="form-control" id="age" name="age" th:value="${user.getAge()}" required>
                                                                         </div>
-                                                                        <div class="mb-3">
+                                                                        <div class="mb-4">
                                                                             <label for="roles" class="form-label">Роль</label>
-                                                                            <select class="form-select" id="roles" name="role">
+                                                                            <select class="form-select" id="role" name="roleAdmin">
                                                                                 <option value="">Выберите роль</option>
-                                                                                <option  name="roleAdmin"
-                                                                                         th:value="ADMIN"
-                                                                                         th:text="Администратор" >Администратор</option>
-                                                                                <option name="roleUser"
-                                                                                        th:value="USER"
-                                                                                        th:text="Пользователь" >Пользователь</option>
+                                                                                <option th:checked="${roleAdmin}" th:value="ROLE_ADMIN" th:text="Администратор">Администратор</option>
+                                                                                <option th:checked="${roleUser}" th:value="ROLE_USER" th:text="Пользователь">Пользователь</option>
                                                                             </select>
                                                                         </div>
+
                                                                         <button type="submit" class="btn btn-primary">Сохранить изменения</button>
                                                                     </form>
                                                                 </div>
@@ -217,16 +208,15 @@
                                                     <label for="password" class="form-label">Пароль</label>
                                                     <input type="password" class="form-control" id="password" name="password" th:id="password" required>
                                                 </div>
-                                                <div class="col-md-12">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" id="roleAdmin" name="roleAdmin" th:value="ADMIN" th:text="Администратор">
-                                                        <label class="form-check-label" for="roleAdmin">Администратор</label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" id="roleVIP" name="roleVIP" th:value="VIP" th:text="ВИП">
-                                                        <label class="form-check-label" for="roleVIP">ВИП</label>
-                                                    </div>
+                                                <div class="mb-4">
+                                                    <label for="roles" class="form-label">Роль</label>
+                                                    <select class="form-select" id="role" name="roleAdmin">
+                                                        <option value="">Выберите роль</option>
+                                                        <option th:checked="${roleAdmin}" th:value="ROLE_ADMIN" th:text="Администратор">Администратор</option>
+                                                        <option th:checked="${roleUser}" th:value="ROLE_USER" th:text="Пользователь">Пользователь</option>
+                                                    </select>
                                                 </div>
+
                                             </div>
                                             <button type="submit" class="btn btn-primary mt-3">Добавить пользователя</button>
                                         </form>

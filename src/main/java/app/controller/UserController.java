@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
@@ -22,9 +21,9 @@ public class UserController {
     }
 
     //@GetMapping(value = "/lk")
-    @GetMapping("/profile")
+    @GetMapping("/user")
     public String getUserPage(ModelMap modelMap, Principal principal) {
         modelMap.addAttribute("user", userService.loadUserByUsername(principal.getName()));
-        return "userPage";
+        return "/user/userPage";
     }
 }

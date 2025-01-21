@@ -66,10 +66,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         //Ленивая загрузка
-        User user = userRepo.getUserByUsername(username);
+        User user = userRepo.getUserByUsername(email);
         Hibernate.initialize(user.getRoles());
-        return userRepo.getUserByUsername(username);
+        return userRepo.getUserByUsername(email);
     }
 }

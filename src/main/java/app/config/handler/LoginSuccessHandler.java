@@ -26,7 +26,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             httpServletResponse.sendRedirect("/vip");
         }
         else {
-            httpServletResponse.sendRedirect("/user/profile");
+            httpServletResponse.sendRedirect("/user/user");
         }
     }
 }
